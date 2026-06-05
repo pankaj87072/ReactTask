@@ -62,7 +62,8 @@ function Card({className,rowsData = [],actionState,count}) {
     }
     if(actionState === 'undo'){
         if(undoStack.length <= 0)return 
-        const poppedVal = undoStack.pop()
+        const poppedVal = undoStack[undoStack.length - 1]
+        setUndoStack(prev => prev.slice(0, -1))
         console.log('udnostack',poppedVal)
         const updated = [...tableData]
         updated[poppedVal.row] = {
