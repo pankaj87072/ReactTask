@@ -1,0 +1,36 @@
+body{
+  margin: 0;
+  padding: 0;
+
+  .navHeading{
+  display: flex;
+  justify-content: center;
+  /* border: solid; */
+  height: 40px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: xx-large;
+  }
+  
+  .tableCard{
+    margin-top: auto;
+    border: solid;
+  }
+}
+.mainTableDIV{
+table {
+  border:1px solid rgb(0, 0, 0);
+  margin: 0px;
+  padding: 0px;
+  #tableHeading{
+    background-color: aqua;
+  }
+}
+th, td{
+  margin: 0px;
+  border-right: 1px solid;
+}
+table{
+  width: 100%;
+}
+}
+
