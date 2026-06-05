@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Card({className,rowsData = [],actionState,count}) {
-    const [tableData, setTableData] = useState(rowsData)
+function Card({className,actionState,count,tableData,setTableData}) {
     const [editingRow, setEditingRow] = useState(-1)
     const [editingCol, setEditingCol] = useState(-1)
     const [value, setValue] = useState('')
@@ -82,7 +81,7 @@ function Card({className,rowsData = [],actionState,count}) {
     <div className={`${className} mainTableDIV`} >
       <table>
         <tr id = 'tableHeading'>
-          {gettingColSizeHeading(rowsData)}
+          {gettingColSizeHeading(tableData)}
         </tr>
         {tableData.map((d,rowIndex)=>(
              <tr key = {rowIndex}>

@@ -1,77 +1,60 @@
 import './App.css'
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import Card from './Card'
+import Pagination from './Pagination'
 
 function App() {
   const [actionState,setActionState] = useState(null)
   const [count,setCount] = useState(0)
-  const rowsData = [
-  {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    salary: 55000,
-    quantity: 12,
-  },
-  {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    salary: 62000,
-    quantity: 8,
-  },
-  {
-    name: "Michael Brown",
-    email: "michael.brown@example.com",
-    salary: 48000,
-    quantity: 15,
-  },
-  {
-    name: "Emily Davis",
-    email: "emily.davis@example.com",
-    salary: 71000,
-    quantity: 5,
-  },
-  {
-    name: "David Wilson",
-    email: "david.wilson@example.com",
-    salary: 53000,
-    quantity: 10,
-  },
-  {
-    name: "Sarah Johnson",
-    email: "sarah.johnson@example.com",
-    salary: 67000,
-    quantity: 7,
-  },
-  {
-    name: "Chris Lee",
-    email: "chris.lee@example.com",
-    salary: 59000,
-    quantity: 20,
-  },
-  {
-    name: "Olivia Taylor",
-    email: "olivia.taylor@example.com",
-    salary: 75000,
-    quantity: 4,
-  },
-  {
-    name: "Daniel Martinez",
-    email: "daniel.martinez@example.com",
-    salary: 51000,
-    quantity: 13,
-  },
-  {
-    name: "Sophia Anderson",
-    email: "sophia.anderson@example.com",
-    salary: 68000,
-    quantity: 9,
-  },
-  ];
+  const [tableData,setTableData] = useState([])
+  const [data,setData] = useState([])
+  const [loading,setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(5)
+
+  const fetchData = async ()=>{
+    try{
+      setLoading(true)
+   const resp = await fetch(`https://randomuser.me/api/?results=5000`)
+   const data = await resp.json()
+   console.log(data.results)
+   if(data){
+    const formattedData = data.results.map((d)=>{
+      return {
+        name:d.name.first + ' ' + d.name.last,
+        email:d.email,
+        gender:d.gender,
+        salary: Math.floor(Math.random() * 100000),
+      }
+    })
+    setData(formattedData)
+    setTotalPages(formattedData.length/10)
+   }
+  }catch(e){
+    console.log('error',e)
+    setLoading(false)
+  }finally{
+  setLoading(false)
+  }
+}
+  useEffect(()=>{
+    fetchData()
+  },[])
+
+  useEffect(()=>{
+    const pages = (currentPage-1) * 10
+    if(data){
+    setTableData(data.slice(pages,pages+10))
+    }
+  },[currentPage,data])
+  
+  console.log('tabledata',tableData)
 
   const handleAction = (action)=>{
     setActionState(action)
     setCount(c => c+1)
   }
+  
   console.log('parent',actionState)
   return (
     <>
@@ -87,7 +70,8 @@ function App() {
         Undo
        </button>
      </div>
-     <Card className='tableCard' rowsData={rowsData} actionState = {actionState} count={count}/>
+     {loading ? 'Loading...' : <><Card className='tableCard' actionState = {actionState} count={count} tableData={tableData} setTableData={setTableData}/>
+     <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages}/></>}
     </>
   )
 }

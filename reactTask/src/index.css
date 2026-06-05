@@ -5,7 +5,6 @@ body{
   .navHeading{
   display: flex;
   justify-content: center;
-  /* border: solid; */
   height: 40px;
   font-family: 'Courier New', Courier, monospace;
   font-size: xx-large;
@@ -13,7 +12,6 @@ body{
   
   .tableCard{
     margin-top: auto;
-    border: solid;
   }
   .actionButtons{
     display: flex;
@@ -45,4 +43,6 @@ table{
   width: 100%;
 }
 }
+
+
 
