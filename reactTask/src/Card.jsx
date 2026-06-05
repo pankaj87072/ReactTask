@@ -6,6 +6,7 @@ function Card({className,rowsData = [],actionState,count}) {
     const [editingCol, setEditingCol] = useState(-1)
     const [value, setValue] = useState('')
     const [showInupt, setShowInput] = useState(false)
+    const [undoStack, setUndoStack] = useState([])
    const gettingColSizeHeading = ()=>{
     let mappedData = []
     for (let key in tableData[0]){
@@ -47,13 +48,28 @@ function Card({className,rowsData = [],actionState,count}) {
             ...updated[editingRow],
             [editingCol]:value
         }
-        console.log('updated',updated)
+        const newItem = {key:editingCol,row:editingRow,value:tableData[editingRow][editingCol]}
+        setUndoStack(prev => [
+        ...prev,
+        newItem
+        ])
         setTableData(updated)
         setShowInput(false)
     }
     }
     if(actionState === 'cancle'){
         setShowInput(false)
+    }
+    if(actionState === 'undo'){
+        if(undoStack.length <= 0)return 
+        const poppedVal = undoStack.pop()
+        console.log('udnostack',poppedVal)
+        const updated = [...tableData]
+        updated[poppedVal.row] = {
+            ...updated[poppedVal.row],
+            [poppedVal.key]:poppedVal.value
+        }
+        setTableData(updated)
     }
    },[count,actionState])
 
