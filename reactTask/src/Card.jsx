@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function Card({className,rowsData = [],style}) {
+function Card({className,rowsData = [],actionState,count}) {
+    const [tableData, setTableData] = useState(rowsData)
     const [editingRow, setEditingRow] = useState(-1)
     const [editingCol, setEditingCol] = useState(-1)
     const [value, setValue] = useState('')
-   const gettingColSizeHeading = (rowsData)=>{
+    const [showInupt, setShowInput] = useState(false)
+   const gettingColSizeHeading = ()=>{
     let mappedData = []
-    for (let key in rowsData[0]){
+    for (let key in tableData[0]){
         mappedData.push(key)
     }
     const res = mappedData.map((d)=>{
@@ -14,33 +16,60 @@ function Card({className,rowsData = [],style}) {
     })
     return res
    }
-   const gettingColSizeData = (singleRow,colIndex,editingCol,editingRow)=>{
+   const gettingColSizeData = (singleRow,rowIndex,editingCol,editingRow) => {
+
     let mappedData = []
     for (let key in singleRow){
-        mappedData.push(singleRow[key])
+        mappedData.push({key,value:singleRow[key]})
     }
-    const res = mappedData.map((d,rowIndex)=>{
-        console.log('trueorfalse',editingRow === rowIndex,editingCol === colIndex)
-        return <td onClick={()=>{
+    const res = mappedData.map((d,colIndex)=>{
+        return <td key={colIndex} onClick={()=>{
             setEditingRow(rowIndex);
-            setEditingCol(colIndex);
-            setValue(d)
-        }}>{(editingRow === rowIndex && editingCol === colIndex) ? <input type="text" value={value} onChange={(e)=>{setValue(e.target.value)}}/> : d} </td>
+            setEditingCol(d.key);
+            setShowInput(true)
+            setValue(d.value)
+             }}>{
+            (showInupt && editingRow === rowIndex && editingCol === d.key) ? 
+            <input type="text" value={value} onClick={(e) => e.stopPropagation()} onChange={(e)=>{
+                setValue(e.target.value)}}/> : d.value
+            } 
+            </td>
     })
     return res
    }
 
-   console.log('edititng',editingCol,editingRow)
+   useEffect(()=>{
+    console.log('state',actionState)
+    if(actionState === 'save'){
+    if(value != tableData[editingRow][editingCol]){
+        const updated = [...tableData]
+        updated[editingRow] = {
+            ...updated[editingRow],
+            [editingCol]:value
+        }
+        console.log('updated',updated)
+        setTableData(updated)
+        setShowInput(false)
+    }
+    }
+    if(actionState === 'cancle'){
+        setShowInput(false)
+    }
+   },[count,actionState])
+
+   console.log('showInupt',showInupt)
+
+
 
   return (
-    <div className={`${className} mainTableDIV`} style={style}>
+    <div className={`${className} mainTableDIV`} >
       <table>
         <tr id = 'tableHeading'>
           {gettingColSizeHeading(rowsData)}
         </tr>
-        {rowsData.map((d,index)=>(
-             <tr key = {index}>
-               {gettingColSizeData(d,index,editingCol,editingRow)}
+        {tableData.map((d,rowIndex)=>(
+             <tr key = {rowIndex}>
+               {gettingColSizeData(d,rowIndex,editingCol,editingRow)}
             </tr>
         ))}
       </table>

@@ -15,6 +15,18 @@ body{
     margin-top: auto;
     border: solid;
   }
+  .actionButtons{
+    display: flex;
+    gap: 4px;
+    justify-content: end;
+    margin-right:4px;
+    button{
+      width: 5rem;
+      margin-bottom: 2px;
+      border-radius: 6px;
+      background-color: aqua;
+    }
+  }
 }
 .mainTableDIV{
 table {

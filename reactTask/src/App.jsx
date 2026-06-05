@@ -1,7 +1,10 @@
 import './App.css'
+import {useState} from 'react'
 import Card from './Card'
 
 function App() {
+  const [actionState,setActionState] = useState(null)
+  const [count,setCount] = useState(0)
   const rowsData = [
   {
     name: "John Doe",
@@ -63,11 +66,28 @@ function App() {
     salary: 68000,
     quantity: 9,
   },
-];
+  ];
+
+  const handleAction = (action)=>{
+    setActionState(action)
+    setCount(c => c+1)
+  }
+  console.log('parent',actionState)
   return (
     <>
      <div className='navHeading'>Claude9 React Coding Task</div>
-     <Card className='tableCard' rowsData={rowsData}/>
+     <div className='actionButtons'>
+       <button onClick={()=>handleAction('save')}>
+        Save
+       </button>
+       <button onClick={()=>handleAction('cancle')}>
+        Cancel
+       </button>
+       <button onClick={()=>handleAction('undo')}>
+        Undo
+       </button>
+     </div>
+     <Card className='tableCard' rowsData={rowsData} actionState = {actionState} count={count}/>
     </>
   )
 }
