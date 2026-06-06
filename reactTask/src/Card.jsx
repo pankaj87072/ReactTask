@@ -41,6 +41,7 @@ function Card({className,actionState,count,tableData,setTableData,setScrollTop,t
 
    useEffect(()=>{
     if(actionState === 'save'){
+        if(editingRow < 0 || editingCol < 0)return 
     if(value != tableData[editingRow][editingCol]){
         const updated = [...tableData]
         updated[editingRow] = {
