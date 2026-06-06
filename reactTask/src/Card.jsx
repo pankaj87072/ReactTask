@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
-function Card({className,actionState,count,tableData,setTableData}) {
+function Card({className,actionState,count,tableData,setTableData,setScrollTop,totalItem,startIndex,endIndex}) {
     const [editingRow, setEditingRow] = useState(-1)
     const [editingCol, setEditingCol] = useState(-1)
     const [value, setValue] = useState('')
     const [showInupt, setShowInput] = useState(false)
     const [undoStack, setUndoStack] = useState([])
+    
    const gettingColSizeHeading = ()=>{
     let mappedData = []
     for (let key in tableData[0]){
@@ -39,7 +40,6 @@ function Card({className,actionState,count,tableData,setTableData}) {
    }
 
    useEffect(()=>{
-    console.log('state',actionState)
     if(actionState === 'save'){
     if(value != tableData[editingRow][editingCol]){
         const updated = [...tableData]
@@ -63,7 +63,6 @@ function Card({className,actionState,count,tableData,setTableData}) {
         if(undoStack.length <= 0)return 
         const poppedVal = undoStack[undoStack.length - 1]
         setUndoStack(prev => prev.slice(0, -1))
-        console.log('udnostack',poppedVal)
         const updated = [...tableData]
         updated[poppedVal.row] = {
             ...updated[poppedVal.row],
@@ -73,22 +72,50 @@ function Card({className,actionState,count,tableData,setTableData}) {
     }
    },[count,actionState])
 
-   console.log('showInupt',showInupt)
+const handleScroll = (e) => {
+  setScrollTop(e.target.scrollTop);
+};
 
+const rowHeight = 40;
 
+const topSpacerHeight =
+  startIndex * rowHeight;
+
+const bottomSpacerHeight =
+  Math.max(
+    0,
+    (totalItem - endIndex) * rowHeight
+  );
+
+console.log('totalItem',totalItem)
 
   return (
-    <div className={`${className} mainTableDIV`} >
+    <div className={`${className} mainTableDIV`} onScroll={handleScroll} >
+        <div
+    style={{
+      height: totalItem*40,
+      position: "relative",
+        }}
+        >
       <table>
-        <tr id = 'tableHeading'>
-          {gettingColSizeHeading(tableData)}
+        <thead>
+        <tr id="tableHeading">
+        {gettingColSizeHeading(tableData)}
         </tr>
+        </thead>
+        <tbody
+  style={{
+    transform: `translateY(${topSpacerHeight}px)`
+  }}
+>      
         {tableData.map((d,rowIndex)=>(
              <tr key = {rowIndex}>
                {gettingColSizeData(d,rowIndex,editingCol,editingRow)}
             </tr>
         ))}
+        </tbody> 
       </table>
+      </div>
     </div>
   );
 }

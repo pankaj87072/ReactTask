@@ -11,6 +11,11 @@ function App() {
   const [loading,setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages,setTotalPages] = useState(5)
+  const [scrollTop, setScrollTop] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(0);
+
+
 
   const fetchData = async ()=>{
     try{
@@ -41,24 +46,27 @@ function App() {
     fetchData()
   },[])
 
+  console.log('scrolltop',scrollTop)
   useEffect(()=>{
     const pages = (currentPage-1) * 10
     if(data){
-    setTableData(data.slice(pages,pages+10))
+    const rowHeight = 40;
+    const containerHeight = 400;
+    setStartIndex(Math.floor(scrollTop / rowHeight));
+    const visibleRows = Math.ceil(containerHeight / rowHeight);
+    setEndIndex(startIndex + visibleRows);
+    setTableData(data.slice(startIndex,endIndex))
     }
-  },[currentPage,data])
+  },[currentPage,data,scrollTop])
   
-  console.log('tabledata',tableData)
-
   const handleAction = (action)=>{
     setActionState(action)
     setCount(c => c+1)
   }
   
-  console.log('parent',actionState)
   return (
     <>
-     <div className='navHeading'>Claude9 React Coding Task</div>
+     <div className='navHeading'>ClaudeSignal React Coding Task</div>
      <div className='actionButtons'>
        <button onClick={()=>handleAction('save')}>
         Save
@@ -70,7 +78,7 @@ function App() {
         Undo
        </button>
      </div>
-     {loading ? 'Loading...' : <><Card className='tableCard' actionState = {actionState} count={count} tableData={tableData} setTableData={setTableData}/>
+     {loading ? 'Loading...' : <><Card className='tableCard' actionState = {actionState} count={count} tableData={tableData} setTableData={setTableData} setScrollTop={setScrollTop} totalItem = {data.length} startIndex={startIndex} endIndex={endIndex}/>
      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages}/></>}
     </>
   )

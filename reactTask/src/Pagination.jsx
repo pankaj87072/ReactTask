@@ -16,24 +16,44 @@ function Pagination({currentPage,setCurrentPage,totalPages = 5}) {
 
   return (
     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-        justifyContent: "center",
-        marginTop: "20px",
-      }}
-    >
-      {/* Previous Button */}
-      <button onClick={handlePrev} disabled={currentPage === 1}>
-        ◀
-      </button>
-      {currentPage}
-      {/* Next Button */}
-      <button onClick={handleNext} disabled={currentPage === totalPages}>
-        ▶
-      </button>
-    </div>
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "15px",
+    marginTop: "20px",
+  }}
+>
+  <button
+    onClick={handlePrev}
+    disabled={currentPage === 1}
+    style={{
+      padding: "8px 14px",
+      borderRadius: "6px",
+      border: "none",
+      cursor: "pointer",
+    }}
+  >
+    ◀ Prev
+  </button>
+
+  <span style={{ fontWeight: "600" }}>
+    Page {currentPage}
+  </span>
+
+  <button
+    onClick={handleNext}
+    disabled={currentPage === totalPages}
+    style={{
+      padding: "8px 14px",
+      borderRadius: "6px",
+      border: "none",
+      cursor: "pointer",
+    }}
+  >
+    Next ▶
+  </button>
+</div>
   );
 }
 
