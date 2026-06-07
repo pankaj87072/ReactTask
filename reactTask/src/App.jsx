@@ -14,15 +14,14 @@ function App() {
   const [scrollTop, setScrollTop] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(0);
-
+  const [sort, setSort] = useState(false)
 
 
   const fetchData = async ()=>{
     try{
       setLoading(true)
-   const resp = await fetch(`https://randomuser.me/api/?results=5000`)
+   const resp = await fetch(`https://randomuser.me/api/?results=500`)
    const data = await resp.json()
-   console.log(data.results)
    if(data){
     const formattedData = data.results.map((d)=>{
       return {
@@ -46,23 +45,29 @@ function App() {
     fetchData()
   },[])
 
-  console.log('scrolltop',scrollTop)
   useEffect(()=>{
     const pages = (currentPage-1) * 10
     if(data){
+      const sortedData = sort ? sortingAsc() : data
+      console.log('sorteddata',sortedData)
     const rowHeight = 40;
     const containerHeight = 400;
     setStartIndex(Math.floor(scrollTop / rowHeight));
     const visibleRows = Math.ceil(containerHeight / rowHeight);
     setEndIndex(startIndex + visibleRows);
-    setTableData(data.slice(startIndex,endIndex))
+    setTableData(sortedData.slice(startIndex,endIndex))
     }
-  },[currentPage,data,scrollTop])
+  },[currentPage,data,scrollTop,sort])
   
   const handleAction = (action)=>{
     setActionState(action)
     setCount(c => c+1)
   }
+  const sortingAsc = ()=>{
+    if(!sort)return
+    return [...data].sort((a,b)=>a?.name?.localeCompare(b?.name))
+  }  
+  console.log('sort',sort)
   
   return (
     <>
@@ -78,7 +83,7 @@ function App() {
         Undo
        </button>
      </div>
-     {loading ? 'Loading...' : <><Card className='tableCard' actionState = {actionState} count={count} tableData={tableData} setTableData={setTableData} setScrollTop={setScrollTop} totalItem = {data.length} startIndex={startIndex} endIndex={endIndex}/>
+     {loading ? 'Loading...' : <><Card className='tableCard' actionState = {actionState} count={count} tableData={tableData} setTableData={setTableData} setScrollTop={setScrollTop} totalItem = {data.length} startIndex={startIndex} endIndex={endIndex} setSort={setSort} sort={sort}/>
      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages}/></>}
     </>
   )

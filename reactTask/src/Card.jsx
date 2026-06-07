@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Card({className,actionState,count,tableData,setTableData,setScrollTop,totalItem,startIndex,endIndex}) {
+function Card({className,actionState,count,tableData,setTableData,setScrollTop,totalItem,startIndex,endIndex,setSort,sort}) {
     const [editingRow, setEditingRow] = useState(-1)
     const [editingCol, setEditingCol] = useState(-1)
     const [value, setValue] = useState('')
@@ -13,7 +13,7 @@ function Card({className,actionState,count,tableData,setTableData,setScrollTop,t
         mappedData.push(key)
     }
     const res = mappedData.map((d)=>{
-        return <th>{d}</th>
+        return <th onClick={()=>setSort(!sort)}>{d}</th>
     })
     return res
    }
@@ -88,7 +88,6 @@ const bottomSpacerHeight =
     (totalItem - endIndex) * rowHeight
   );
 
-console.log('totalItem',totalItem)
 
   return (
     <div className={`${className} mainTableDIV`} onScroll={handleScroll} >
